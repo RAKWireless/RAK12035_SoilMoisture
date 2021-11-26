@@ -19,6 +19,8 @@
 
 #include <WisBlock-API.h>
 
+#include <at_cmd.h>
+
 // Debug output set to 0 to disable app debug output
 #ifndef MY_DEBUG
 #define MY_DEBUG 0

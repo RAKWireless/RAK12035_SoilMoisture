@@ -89,8 +89,8 @@ void setup()
 		new_value += new_reading;
 		new_value = new_value / 2;
 		delay(250);
-		digitalToggle(LED_GREEN);
-		digitalToggle(LED_BLUE);
+		digitalWrite(LED_GREEN, !digitalRead(LED_GREEN));
+		digitalWrite(LED_BLUE, !digitalRead(LED_BLUE));
 	}
 	// Save the result
 	zero_val = new_value;
@@ -124,8 +124,8 @@ void setup()
 		new_value += new_reading;
 		new_value = new_value / 2;
 		delay(250);
-		digitalToggle(LED_GREEN);
-		digitalToggle(LED_BLUE);
+		digitalWrite(LED_GREEN, !digitalRead(LED_GREEN));
+		digitalWrite(LED_BLUE, !digitalRead(LED_BLUE));
 	}
 	// Save the result
 	hundred_val = new_value;
