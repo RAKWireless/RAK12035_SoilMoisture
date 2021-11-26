@@ -122,7 +122,7 @@ void app_event_handler(void)
 		Serial.printf("%02X\n", g_soil_data.valid);
 #endif
 
-		lmh_error_status result = send_lorawan_packet((uint8_t *)&g_soil_data, SOIL_DATA_LEN);
+		lmh_error_status result = send_lora_packet((uint8_t *)&g_soil_data, SOIL_DATA_LEN);
 		switch (result)
 		{
 		case LMH_SUCCESS:
