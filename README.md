@@ -48,141 +48,146 @@ The calibration method in air and water is not very precise. To get more precise
 
 ## This class provides the following methods:
 
-**RAK12035(uint8_t addr)**
+**`RAK12035(uint8_t addr)`**    
 Constructor for Soil Moisture sensor interface. Optionally set sensor I2C address if different from default    
 Parameters:    
+
 | Direction | Name | Function | 
 | --------- | ---- | -------- |
 | in        | addr | Alternative I2C address |
 |  return |  | none  | 
 
-## Version History
-
-### v1.0.0
-- Initial Release
-
-## Methods
-
-### Constructor RAK12035
-Optionally set sensor I2C address if different from default    
-
-**void begin(bool wait)**    
+**`void begin(bool wait)`**    
 Initializes anything ... it does a reset.    
 When used without parameter or parameter value is false then a waiting time of at least 1 second is expected to give the sensor
 some time to boot up.    
 Alternatively use true as parameter and the method waits for a second and returns after that.          
 Parameters:    
+
 | Direction | Name | Function | 
 | --------- | ---- | -------- |
 | in          | wait  | If true, wait 1 second after the sensor was reset  | 
 
-**bool get_sensor_version(uint8_t *version)**    
+**`bool get_sensor_version(uint8_t *version)`**      
 Get Firmware Version. 0x22 means 2.2    
 Parameters:    
+
 | Direction | Name | Function | 
 | --------- | ---- | -------- |
 | in          | version  | Pointer to the variable to write the version into  |
 | return      | true if I2C communication succeeded, false if an error occured | 
 
-**bool get_sensor_capacitance(uint16_t *capacitance)**    
+**`bool get_sensor_capacitance(uint16_t *capacitance)`**    
 Reads the capacitance from the sensor and writes it into the variable **`capacitance`** and returns true. If the I2C read command fails, it returns false and you should disregard the value and check the connection to the sensor. 
 More moisture will give you higher reading. Normally all sensors give about 200 - 300 as value in free air at
 3.3V supply.
 Parameters:    
+
 | Direction | Name | Function | 
 | --------- | ---- | -------- |
 | in          | capacitance  | Pointer to the variable to write the capacitance into  |
 | return      | true if I2C communication succeeded, false if an error occured | 
 
-**bool get_sensor_moisture(uint8_t *moisture)**    
+**`bool get_sensor_moisture(uint8_t *moisture)`**    
 Reads the capacitance from the sensor, converts it to % RH based on calibration values and writes it into the variable **`moisture`** and returns true. If the I2C read command fails, it returns false and you should disregard the value and check the connection to the sensor.     
 More moisture will give you higher reading. Normally all sensors give about 200 - 300 as value in free air at
 3.3V supply.    
 Parameters:    
+
 | Direction | Name | Function | 
 | --------- | ---- | -------- |
 | in          | moisture  | Pointer to the variable to write the moisture value into  |
 | return      | true if I2C communication succeeded, false if an error occured | 
 
-**bool get_sensor_temperature(float *temperature)**
+**`bool get_sensor_temperature(float *temperature)`**    
 Read the Temperature Measurement. Temperature is measured by the thermistor on the tip of the sensor. Calculated absolute measurement accuracy is better than 2%. The temperature is in degrees Celsius with factor 10, so need to divide by 10 to get real value. If the I2C read command fails, it returns false and you should disregard the value and check the connection to the sensor.    
 Parameters:    
+
 | Direction | Name | Function | 
 | --------- | ---- | -------- |
 | in          | temperature  | Pointer to the variable to write the temperature value into  |
 | return      | true if I2C communication succeeded, false if an error occured | 
 
-**bool set_sensor_addr(uint8_t addr)**
+**`bool set_sensor_addr(uint8_t addr)`**    
 Change I2C address of the sensor to the provided address (1..127). Requires a reset after it in order for the new address to become effective. Method returns true if the new address is set successfully on the sensor.    
 Parameters:    
+
 | Direction | Name | Function | 
 | --------- | ---- | -------- |
 | in          | addr  | The new I2C address  |
 | return      | true if I2C communication succeeded, false if an error occured or if the I2C address is out of range| 
 
-**uint8_t get_sensor_addr(void)**
+**`uint8_t get_sensor_addr(void)`**    
 Return current address of the Sensor. This function returns the I2C address the sensor class is using.    
 Parameters:    
+
 | Direction | Name | Function | 
 | --------- | ---- | -------- |
 | return      | current used sensor I2C address | 
 
-**bool set_i2c_addr(uint8_t addr)**
+**`bool set_i2c_addr(uint8_t addr)`**    
 Change I2C address the class uses to access the sensor. Useful if one instance of the class is used for multiple sensors.    
 Parameters:    
+
 | Direction | Name | Function | 
 | --------- | ---- | -------- |
 | in          | addr  | The new I2C address to be used |
 | return      | true if I2C address was accepted, false if the I2C address is out of range| 
 
-**bool sensor_on(void)**
+**`bool sensor_on(void)`**    
 Powers up the sensor. Use this function in order to save power inbetween measurements. After power up the connection to the sensor is tested. If the I2C read command fails, it returns false and you should check the connection to the sensor.    
 Parameters:    
+
 | Direction | Name | Function | 
 | --------- | ---- | -------- |
 | return      | true if I2C communication succeeded, false if an error occured | 
 
-**bool sensor_sleep(void)**
+**`bool sensor_sleep(void)`**    
 Powers down the sensor. Use this function in order to save power inbetween measurements.    
 Parameters:    
+
 | Direction | Name | Function | 
 | --------- | ---- | -------- |
 | return      | true if I2C communication succeeded, false if an error occured | 
 
-**bool set_dry_cal(uint16_t zero_val)**
+**`bool set_dry_cal(uint16_t zero_val)`**    
 After a sensor calibration the measured capacity in air (dry sensor) must be written with this command. The value is used in the **`get_sensor_moisture`** sensor to calculate the % RH value.    
 Parameters:    
+
 | Direction | Name | Function | 
 | --------- | ---- | -------- |
 | in          | zero_val  | The calibration value for 0%  |
 | return      | true if I2C communication succeeded, false if an error occured | 
 
-**bool set_wet_cal(uint16_t hundred_val)**
+**`bool set_wet_cal(uint16_t hundred_val)`**    
 After a sensor calibration the measured capacity in water (wet sensor) must be written with this command. The value is used in the **`get_sensor_moisture`** sensor to calculate the % RH value.
 Parameters:    
+
 | Direction | Name | Function | 
 | --------- | ---- | -------- |
 | in          | hundred_val  | The calibration value for 100%  |
 | return      | true if I2C communication succeeded, false if an error occured | 
 
-**bool get_dry_cal(uint16_t *zero_val)**
+**`bool get_dry_cal(uint16_t *zero_val)`**    
 Read the saved sensor calibration from the measured capacity in air (dry sensor) saved in the sensor. The value is used in the **`get_sensor_moisture`** sensor to calculate the % RH value.    
 Parameters:    
+
 | Direction | Name | Function | 
 | --------- | ---- | -------- |
 | in          | *zero_val  | Pointer to the variable to write the dry calibration to  |
 | return      | true if I2C communication succeeded, false if an error occured | 
 
-**bool get_wet_cal(uint16_t *hundred_val)**
+**`bool get_wet_cal(uint16_t *hundred_val)`**    
 Read the saved sensor calibration from the measured capacity in water (wet sensor) saved in the sensor. The value is used in the **`get_sensor_moisture`** sensor to calculate the % RH value.
 Parameters:    
+
 | Direction | Name | Function | 
 | --------- | ---- | -------- |
 | in          | *hundred_val  | Pointer to the variable to write the wet calibration to  |
 | return      | true if I2C communication succeeded, false if an error occured | 
 
-**void reset(void)**
-Performs a reset of the soil sensor.
+**`void reset(void)`**    
+Performs a reset of the soil sensor.    
 Parameters:    
 None     
 
@@ -196,7 +201,7 @@ There are several examples in the examples folder.
 
 Example setup for LoRaWAN, OTAA join mode, sending data every 60 minutes. DevEUI, AppEUI and AppKey in this example are random choosen and need to be changed before the sensor node can connect to a LoRaWAN server. Setup can be done over the USB interface using AT commands. A full list of supported AT commands => [AT Command Manual](https://github.com/beegee-tokyo/WisBlock-API/blob/main/AT-Commands.md) :arrow_heading_up:
 
-```
+```AT
 AT+NWM=1
 AT+NJM=1
 AT+DEVEUI=1000000000000001
@@ -205,11 +210,18 @@ AT+APPKEY=AB00AB00AB00AB00AB00AB00AB00AB00
 AT+SENDFREQ=3600
 AT+JOIN=1,1,10,10
 ```
-Explanation:
-- **AT+NWM=1** ==> set the node into LoRaWAN mode
-- **AT+NJM=1** ==> set network join method to OTAA
-- **AT+DEVEUI=1000000000000001** ==> set the device EUI, best to use the DevEUI that is printed on the label of your WisBlock Core module
-- **AT+APPEUI=AB00AB00AB00AB00** ==> set the application EUI, required on the LoRaWAN server 
-- **AT+APPKEY=AB00AB00AB00AB00AB00AB00AB00AB00** ==> set the application Key, used to encrypt the data packet during network join
-- **AT+SENDFREQ=3600** ==> set the frequency the sensor node will send data packets. 3600 == 60 x 60 seconds == 1 hour
-- **AT+JOIN=1,1,10,10** ==> start to join the network, enables as well auto join after a power up or a device reset
+| Command | Explanation |
+| --- | --- |
+| **AT+NWM=1**  |  set the node into LoRaWAN mode |
+| **AT+NJM=1**  |  set network join method to OTAA |
+| **AT+DEVEUI=1000000000000001**  |  set the device EUI, best to use the DevEUI that is printed on the label of your WisBlock Core module |
+| **AT+APPEUI=AB00AB00AB00AB00**  |  set the application EUI, required on the LoRaWAN server  |
+| **AT+APPKEY=AB00AB00AB00AB00AB00AB00AB00AB00**  |  set the application Key, used to encrypt the data packet during network join |
+| **AT+SENDFREQ=3600**  |  set the frequency the sensor node will send data packets. 3600 == 60 x 60 seconds == 1 hour |
+| **AT+JOIN=1,1,10,10**  |  start to join the network, enables as well auto join after a power up or a device reset |
+
+## Version History
+
+### v1.0.0
+- Initial Release
+
