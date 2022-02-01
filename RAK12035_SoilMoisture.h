@@ -38,6 +38,7 @@ class RAK12035
 public:
 	RAK12035(uint8_t addr = SLAVE_I2C_ADDRESS_DEFAULT);
 
+	void setup(TwoWire &i2c_library = Wire);
 	void begin(bool wait = true);
 	bool get_sensor_version(uint8_t *version);
 	bool get_sensor_capacitance(uint16_t *capacitance);
@@ -60,6 +61,7 @@ private:
 	uint16_t _wet_cal = 250;
 	bool read_rak12035(uint8_t reg, uint8_t *data, uint8_t length);
 	bool write_rak12035(uint8_t reg, uint8_t *data, uint8_t length);
+	TwoWire *_i2c_port = &Wire;
 };
 
 #endif

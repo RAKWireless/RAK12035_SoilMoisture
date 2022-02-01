@@ -12,30 +12,22 @@
 #include "RAK12035_SoilMoisture.h"
 
 //define release-independent I2C functions
-#if defined(__AVR_ATtiny44__) || defined(__AVR_ATtiny84__) || defined(__AVR_ATtiny45__) || defined(__AVR_ATtiny85__)
-#include <TinyWireM.h>
-#define i2cBegin TinyWireM.begin
-#define i2cBeginTransmission TinyWireM.beginTransmission
-#define i2cEndTransmission TinyWireM.endTransmission
-#define i2cRequestFrom TinyWireM.requestFrom
-#define i2cRead TinyWireM.receive
-#define i2cWrite TinyWireM.send
-#elif ARDUINO >= 100
+#if ARDUINO >= 100
 #include <Wire.h>
-#define i2cBegin Wire.begin
-#define i2cBeginTransmission Wire.beginTransmission
-#define i2cEndTransmission Wire.endTransmission
-#define i2cRequestFrom Wire.requestFrom
-#define i2cRead Wire.read
-#define i2cWrite Wire.write
+#define i2cBegin _i2c_port->begin
+#define i2cBeginTransmission _i2c_port->beginTransmission
+#define i2cEndTransmission _i2c_port->endTransmission
+#define i2cRequestFrom _i2c_port->requestFrom
+#define i2cRead _i2c_port->read
+#define i2cWrite _i2c_port->write
 #else
 #include <Wire.h>
-#define i2cBegin Wire.begin
-#define i2cBeginTransmission Wire.beginTransmission
-#define i2cEndTransmission Wire.endTransmission
-#define i2cRequestFrom Wire.requestFrom
-#define i2cRead Wire.receive
-#define i2cWrite Wire.send
+#define i2cBegin Wire->begin
+#define i2cBeginTransmission Wire->beginTransmission
+#define i2cEndTransmission Wire->endTransmission
+#define i2cRequestFrom Wire->requestFrom
+#define i2cRead Wire->receive
+#define i2cWrite Wire->send
 #endif
 
 /*----------------------------------------------------------------------*
@@ -45,6 +37,11 @@
 RAK12035::RAK12035(uint8_t addr) : _sensorAddress(addr)
 {
 	// nothing to do ... Wire.begin needs to be put outside of class
+}
+
+void RAK12035::setup(TwoWire &i2c_library)
+{
+	_i2c_port = &i2c_library;
 }
 
 /*----------------------------------------------------------------------*
@@ -363,11 +360,11 @@ bool RAK12035::read_rak12035(uint8_t reg, uint8_t *data, uint8_t length)
  */
 bool RAK12035::write_rak12035(uint8_t reg, uint8_t *data, uint8_t length)
 {
-	Wire.beginTransmission(SLAVE_I2C_ADDRESS_DEFAULT);
-	Wire.write(reg); // sends five bytes
+	_i2c_port->beginTransmission(SLAVE_I2C_ADDRESS_DEFAULT);
+	_i2c_port->write(reg); // sends five bytes
 	for (int i = 0; i < length; i++)
 	{
 		Wire.write(data[i]);
 	}
-	Wire.endTransmission(); // stop transmitting
+	_i2c_port->endTransmission(); // stop transmitting
 }

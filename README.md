@@ -57,6 +57,14 @@ Parameters:
 | in        | addr | Alternative I2C address |
 |  return |  | none  | 
 
+**`void setup(TwoWire &i2c_library = Wire)`**    
+Optional if other than Wire will be used. `soil.setup(Wire1)` will use Wire1 instead of Wire to communicate with the sensor.          
+Parameters:    
+
+| Direction | Name | Function | 
+| --------- | ---- | -------- |
+| in          | i2c_library  | {Pointer to the Wire instance that should be used.}  | 
+
 **`void begin(bool wait)`**    
 Initializes anything ... it does a reset.    
 When used without parameter or parameter value is false then a waiting time of at least 1 second is expected to give the sensor
@@ -197,10 +205,34 @@ There are several examples in the examples folder.
 - [RAK12035_Calibration](./examples/RAK12035_Calibration) shows how to implement the sensor calibration
 - [RAK12035_LowPower](./examples/RAK12035_LowPower) shows how to shut down and restart the sensor between measurements
 - [RAK12035_Change_Address](./examples/RAK12035_Change_Address) shows how to change the I2C address of the sensor
-- [RAK12035_RAK4631_LPWAN](./examples/RAK12035_RAK4631_LPWAN) is a complete example for the RAK4631 using the [WisBlock API](https://github.com/beegee-tokyo/WisBlock-API) :arrow_heading_up:. It sends the measured soil moisture, soil temperature and a flag for valid data in Cayenne LPP format over LPWAN to a LPWAN server. Please check the [example readme](./examples/RAK12035_RAK4631_LPWAN/README.md) :arrow_heading_up: how to use this example.    
+- [RAK12035_RAK4631_LPWAN](./examples/RAK12035_RAK4631_LPWAN) is a complete example for the RAK4631 using the [WisBlock API](https://github.com/beegee-tokyo/WisBlock-API) :arrow_heading_up:. It sends the measured soil moisture, soil temperature and a flag for valid data in Cayenne LPP format over LPWAN to a LPWAN server. Please check the [WisBlock API docs]((https://github.com/beegee-tokyo/WisBlock-API) :arrow_heading_up: how to setup the LPWAN credentials by AT commands or over BLE.    
+
+Example setup for LoRaWAN, OTAA join mode, sending data every 60 minutes. DevEUI, AppEUI and AppKey in this example are random choosen and need to be changed before the sensor node can connect to a LoRaWAN server. Setup can be done over the USB interface using AT commands. A full list of supported AT commands => [AT Command Manual](https://github.com/beegee-tokyo/WisBlock-API/blob/main/AT-Commands.md) :arrow_heading_up:
+
+```AT
+AT+NWM=1
+AT+NJM=1
+AT+DEVEUI=1000000000000001
+AT+APPEUI=AB00AB00AB00AB00
+AT+APPKEY=AB00AB00AB00AB00AB00AB00AB00AB00
+AT+SENDFREQ=3600
+AT+JOIN=1,1,10,10
+```
+| Command | Explanation |
+| --- | --- |
+| **AT+NWM=1**  |  set the node into LoRaWAN mode |
+| **AT+NJM=1**  |  set network join method to OTAA |
+| **AT+DEVEUI=1000000000000001**  |  set the device EUI, best to use the DevEUI that is printed on the label of your WisBlock Core module |
+| **AT+APPEUI=AB00AB00AB00AB00**  |  set the application EUI, required on the LoRaWAN server  |
+| **AT+APPKEY=AB00AB00AB00AB00AB00AB00AB00AB00**  |  set the application Key, used to encrypt the data packet during network join |
+| **AT+SENDFREQ=3600**  |  set the frequency the sensor node will send data packets. 3600 == 60 x 60 seconds == 1 hour |
+| **AT+JOIN=1,1,10,10**  |  start to join the network, enables as well auto join after a power up or a device reset |
 
 ## Version History
 
+### v1.0.1
+- Remove nRF52 specific code
+- Make it possible to use Wire1
 ### v1.0.0
 - Initial Release
 
