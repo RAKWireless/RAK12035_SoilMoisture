@@ -74,6 +74,8 @@ void RAK12035::begin(bool wait)
 		}
 	}
 	delay(500);
+	get_dry_cal(&_dry_cal);
+	get_wet_cal(&_wet_cal);
 }
 
 /**
@@ -85,6 +87,8 @@ void RAK12035::begin(bool wait)
  */
 bool RAK12035::get_sensor_version(uint8_t *version)
 {
+	read_rak12035(SOILMOISTURESENSOR_GET_VERSION, &_version, 1);
+	version[0] = _version;
 	return read_rak12035(SOILMOISTURESENSOR_GET_VERSION, version, 1);
 }
 
@@ -112,31 +116,52 @@ bool RAK12035::get_sensor_capacitance(uint16_t *capacitance)
  */
 bool RAK12035::get_sensor_moisture(uint8_t *moisture)
 {
+	if (_version > 2)
+	{
 	bool result = read_rak12035(SOILMOISTURESENSOR_GET_HUMIDITY, moisture, 1);
 	return result;
+	}
+	else
+	{
+		uint16_t capacitance = 0;
+		Wire.setTimeout(5000);
 
-	// uint16_t capacitance = 0;
-	// Wire.setTimeout(5000);
+		if (get_sensor_capacitance(&capacitance))
+		{
+			if (_dry_cal < _wet_cal)
+			{
+				if (capacitance <= _dry_cal)
+				{
+					capacitance = _dry_cal;
+				}
+				if (capacitance >= _wet_cal)
+				{
+					capacitance = _wet_cal;
+				}
 
-	// if (get_sensor_capacitance(&capacitance))
-	// {
-	// 	if (capacitance <= _dry_cal)
-	// 	{
-	// 		capacitance = _dry_cal;
-	// 	}
-	// 	if (capacitance >= _wet_cal)
-	// 	{
-	// 		capacitance = _wet_cal;
-	// 	}
+				moisture[0] = (_wet_cal - capacitance) / ((_wet_cal - _dry_cal) / 100.0);
+			}
+			else
+			{
+				if (capacitance >= _dry_cal)
+				{
+					capacitance = _dry_cal;
+				}
+				if (capacitance <= _wet_cal)
+				{
+					capacitance = _wet_cal;
+				}
 
-	// 	moisture[0] = (_dry_cal - capacitance) / ((_dry_cal - _wet_cal) / 100.0);
-	// 	if (moisture[0] > 100)
-	// 	{
-	// 		moisture[0] = 100;
-	// 	}
-	// 	return true;
-	// }
-	// return false;
+				moisture[0] = (_dry_cal - capacitance) / ((_dry_cal - _wet_cal) / 100.0);
+			}
+			if (moisture[0] > 100)
+			{
+				moisture[0] = 100;
+			}
+			return true;
+		}
+		return false;
+}
 }
 
 /**

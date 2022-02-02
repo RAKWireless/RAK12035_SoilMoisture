@@ -59,6 +59,7 @@ private:
 	int _sensorAddress = SLAVE_I2C_ADDRESS_DEFAULT;
 	uint16_t _dry_cal = 590;
 	uint16_t _wet_cal = 250;
+	uint8_t _version = 0;
 	bool read_rak12035(uint8_t reg, uint8_t *data, uint8_t length);
 	bool write_rak12035(uint8_t reg, uint8_t *data, uint8_t length);
 	TwoWire *_i2c_port = &Wire;
