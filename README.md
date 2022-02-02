@@ -230,6 +230,10 @@ AT+JOIN=1,1,10,10
 
 ## Version History
 
+### v1.0.3
+- fix the mess, correct wrong humidity readings
+### v1.0.2
+- messed up
 ### v1.0.1
 - Remove nRF52 specific code
 - Make it possible to use Wire1

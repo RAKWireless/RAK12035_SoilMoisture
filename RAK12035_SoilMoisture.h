@@ -11,12 +11,7 @@
 #ifndef I2CSOILMOISTURESENSOR_H
 #define I2CSOILMOISTURESENSOR_H
 
-#if defined(ARDUINO) && ARDUINO >= 100
 #include <Arduino.h>
-#else
-#include <WProgram.h>
-#endif
-
 #include <Wire.h>
 
 #define SLAVE_I2C_ADDRESS_DEFAULT 0x20

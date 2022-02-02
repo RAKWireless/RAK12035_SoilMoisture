@@ -11,8 +11,6 @@
 
 #include "RAK12035_SoilMoisture.h"
 
-//define release-independent I2C functions
-#if ARDUINO >= 100
 #include <Wire.h>
 #define i2cBegin _i2c_port->begin
 #define i2cBeginTransmission _i2c_port->beginTransmission
@@ -20,15 +18,6 @@
 #define i2cRequestFrom _i2c_port->requestFrom
 #define i2cRead _i2c_port->read
 #define i2cWrite _i2c_port->write
-#else
-#include <Wire.h>
-#define i2cBegin _i2c_port->begin
-#define i2cBeginTransmission _i2c_port->beginTransmission
-#define i2cEndTransmission _i2c_port->endTransmission
-#define i2cRequestFrom _i2c_port->requestFrom
-#define i2cRead _i2c_port->receive
-#define i2cWrite _i2c_port->send
-#endif
 
 /*----------------------------------------------------------------------*
  * Constructor.                                                         *
@@ -80,7 +69,7 @@ void RAK12035::begin(bool wait)
 
 /**
  * @brief Get the sensor firmware version
- * 
+ *
  * @param version The sensor firmware version
  * @return true I2C transmission success
  * @return false I2C transmission failed
@@ -94,7 +83,7 @@ bool RAK12035::get_sensor_version(uint8_t *version)
 
 /**
  * @brief Get the sensor moisture value as capacitance value
- * 
+ *
  * @param capacitance Variable to store value
  * @return true I2C transmission success
  * @return false I2C transmission failed
@@ -109,7 +98,7 @@ bool RAK12035::get_sensor_capacitance(uint16_t *capacitance)
 
 /**
  * @brief Get the sensor moisture value as percentage
- * 
+ *
  * @param moisture Variable to store the value
  * @return true I2C transmission success
  * @return false I2C transmission failed
@@ -118,13 +107,13 @@ bool RAK12035::get_sensor_moisture(uint8_t *moisture)
 {
 	if (_version > 2)
 	{
-	bool result = read_rak12035(SOILMOISTURESENSOR_GET_HUMIDITY, moisture, 1);
-	return result;
+		bool result = read_rak12035(SOILMOISTURESENSOR_GET_HUMIDITY, moisture, 1);
+		return result;
 	}
 	else
 	{
 		uint16_t capacitance = 0;
-		_i2c_port.setTimeout(5000);
+		_i2c_port->setTimeout(5000);
 
 		if (get_sensor_capacitance(&capacitance))
 		{
@@ -161,12 +150,12 @@ bool RAK12035::get_sensor_moisture(uint8_t *moisture)
 			return true;
 		}
 		return false;
-}
+	}
 }
 
 /**
  * @brief Get the sensor temperature
- * 
+ *
  * @param temperature as uint16_t value * 10
  * @return true I2C transmission success
  * @return false I2C transmission failed
@@ -181,7 +170,7 @@ bool RAK12035::get_sensor_temperature(uint16_t *temperature)
 
 /**
  * @brief Get the current I2C address from the sensor class
- * 
+ *
  * @return the address the sensor class is using
  */
 uint8_t RAK12035::get_sensor_addr(void)
@@ -191,7 +180,7 @@ uint8_t RAK12035::get_sensor_addr(void)
 
 /**
  * @brief Set the new I2C address the sensor class will use.
- * 
+ *
  * @param addr The new sensor address
  * @return false if the I2C address is invalid (only 1 to 127 is allowed)
  */
@@ -207,7 +196,7 @@ bool RAK12035::set_i2c_addr(uint8_t addr)
 
 /**
  * @brief Set the new I2C address on the sensor. Requires a sensor reset after changing.
- * 
+ *
  * @param addr The new sensor address
  * @return true I2C transmission success
  * @return false I2C transmission failed or if the I2C address is invalid (only 1 to 127 is allowed)
@@ -230,7 +219,7 @@ bool RAK12035::set_sensor_addr(uint8_t addr)
 
 /**
  * @brief Enable the power supply to the sensor
- * 
+ *
  */
 bool RAK12035::sensor_on(void)
 {
@@ -258,7 +247,7 @@ bool RAK12035::sensor_on(void)
 
 /**
  * @brief Switch power supply of the sensor off
- * 
+ *
  */
 bool RAK12035::sensor_sleep(void)
 {
@@ -271,7 +260,7 @@ bool RAK12035::sensor_sleep(void)
 
 /**
  * @brief Set the dry value from the sensor calibration
- * 
+ *
  * @param zero_val dry value
  */
 bool RAK12035::set_dry_cal(uint16_t zero_val)
@@ -293,7 +282,7 @@ bool RAK12035::get_dry_cal(uint16_t *zero_val)
 
 /**
  * @brief Set the wet value from the sensor calibration
- * 
+ *
  * @param hundred_val wet value
  */
 bool RAK12035::set_wet_cal(uint16_t hundred_val)
@@ -315,7 +304,7 @@ bool RAK12035::get_wet_cal(uint16_t *hundred_val)
 
 /**
  * @brief Reset the sensor by pulling the reset line low.
- * 
+ *
  */
 void RAK12035::reset(void)
 {
@@ -339,7 +328,7 @@ void RAK12035::reset(void)
 
 /**
  * @brief I2C read from sensor
- * 
+ *
  * @param reg Sensor register to read
  * @param data Pointer to data buffer
  * @param length Number of bytes to read
@@ -359,7 +348,7 @@ bool RAK12035::read_rak12035(uint8_t reg, uint8_t *data, uint8_t length)
 	i2cRequestFrom(_sensorAddress, length);
 	int i = 0;
 	time_t timeout = millis();
-	while (_i2c_port.available()) // slave may send less than requested
+	while (_i2c_port->available()) // slave may send less than requested
 	{
 		data[i++] = i2cRead(); // receive a byte as a proper uint8_t
 		if ((millis() - timeout) > 1000)
@@ -377,7 +366,7 @@ bool RAK12035::read_rak12035(uint8_t reg, uint8_t *data, uint8_t length)
 
 /**
  * @brief I2C write to the sensor
- * 
+ *
  * @param reg Register to write to
  * @param data Data to write
  * @return true I2C transmission success
