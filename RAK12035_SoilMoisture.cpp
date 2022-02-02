@@ -22,12 +22,12 @@
 #define i2cWrite _i2c_port->write
 #else
 #include <Wire.h>
-#define i2cBegin Wire->begin
-#define i2cBeginTransmission Wire->beginTransmission
-#define i2cEndTransmission Wire->endTransmission
-#define i2cRequestFrom Wire->requestFrom
-#define i2cRead Wire->receive
-#define i2cWrite Wire->send
+#define i2cBegin _i2c_port->begin
+#define i2cBeginTransmission _i2c_port->beginTransmission
+#define i2cEndTransmission _i2c_port->endTransmission
+#define i2cRequestFrom _i2c_port->requestFrom
+#define i2cRead _i2c_port->receive
+#define i2cWrite _i2c_port->send
 #endif
 
 /*----------------------------------------------------------------------*
@@ -124,7 +124,7 @@ bool RAK12035::get_sensor_moisture(uint8_t *moisture)
 	else
 	{
 		uint16_t capacitance = 0;
-		Wire.setTimeout(5000);
+		_i2c_port.setTimeout(5000);
 
 		if (get_sensor_capacitance(&capacitance))
 		{
@@ -359,7 +359,7 @@ bool RAK12035::read_rak12035(uint8_t reg, uint8_t *data, uint8_t length)
 	i2cRequestFrom(_sensorAddress, length);
 	int i = 0;
 	time_t timeout = millis();
-	while (Wire.available()) // slave may send less than requested
+	while (_i2c_port.available()) // slave may send less than requested
 	{
 		data[i++] = i2cRead(); // receive a byte as a proper uint8_t
 		if ((millis() - timeout) > 1000)
@@ -389,7 +389,7 @@ bool RAK12035::write_rak12035(uint8_t reg, uint8_t *data, uint8_t length)
 	_i2c_port->write(reg); // sends five bytes
 	for (int i = 0; i < length; i++)
 	{
-		Wire.write(data[i]);
+		_i2c_port->write(data[i]);
 	}
 	_i2c_port->endTransmission(); // stop transmitting
 }
