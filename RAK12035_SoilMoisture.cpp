@@ -381,4 +381,5 @@ bool RAK12035::write_rak12035(uint8_t reg, uint8_t *data, uint8_t length)
 		_i2c_port->write(data[i]);
 	}
 	_i2c_port->endTransmission(); // stop transmitting
+	return true;
 }
