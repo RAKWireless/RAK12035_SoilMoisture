@@ -243,7 +243,7 @@ uint16_t start_calib(bool is_dry)
 	digitalWrite(LED_BLUE, HIGH);
 
 	// Stop app timer while we do calibration
-	g_task_wakeup_timer.stop();
+	api_timer_stop();
 
 	Wire.begin();
 
@@ -255,9 +255,8 @@ uint16_t start_calib(bool is_dry)
 		if (g_lorawan_settings.send_repeat_time != 0)
 		{
 			// Calibration finished, restart the timer that will wakeup the loop frequently
-			g_task_wakeup_timer.stop();
-			g_task_wakeup_timer.setPeriod(g_lorawan_settings.send_repeat_time);
-			g_task_wakeup_timer.start();
+			api_timer_stop();
+			api_timer_restart(g_lorawan_settings.send_repeat_time);
 		}
 
 		digitalWrite(LED_BLUE, LOW);
@@ -302,9 +301,8 @@ uint16_t start_calib(bool is_dry)
 	if (g_lorawan_settings.send_repeat_time != 0)
 	{
 		// Calibration finished, restart the timer that will wakeup the loop frequently
-		g_task_wakeup_timer.stop();
-		g_task_wakeup_timer.setPeriod(g_lorawan_settings.send_repeat_time);
-		g_task_wakeup_timer.start();
+		api_timer_stop();
+		api_timer_restart(g_lorawan_settings.send_repeat_time);
 	}
 
 	// Return the result
